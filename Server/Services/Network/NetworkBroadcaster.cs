@@ -7,7 +7,7 @@ using Server.ServiceRealisation;
 using Server.Utility;
 using Shared;
 
-namespace Server.Services;
+namespace Server.Services.Network;
 
 [Service]
 public sealed class NetworkBroadcaster : IInitializable

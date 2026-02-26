@@ -3,7 +3,7 @@ using Hypercube.Utilities.Dependencies;
 using Server.ServiceRealisation;
 using Shared;
 
-namespace Server.Services;
+namespace Server.Services.DTOHandlers;
 
 [Service]
 public sealed class DataTrackerService

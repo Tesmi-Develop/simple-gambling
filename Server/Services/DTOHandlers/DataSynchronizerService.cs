@@ -1,13 +1,14 @@
 using Hypercube.Utilities.Dependencies;
-using Server.Events;
+using Server.Events.ClientEvents;
 using Server.Events.DataEvents;
 using Server.ServiceRealisation;
+using Server.Services.Network;
 using Server.Utility;
 using Shared;
 using Shared.NetworkEvents;
 using Shared.NetworkEvents.DataEvents;
 
-namespace Server.Services;
+namespace Server.Services.DTOHandlers;
 
 [Service]
 public sealed class DataSynchronizerService : IInitializable

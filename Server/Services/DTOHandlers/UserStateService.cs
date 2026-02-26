@@ -1,11 +1,12 @@
 using Hypercube.Utilities.Dependencies;
 using Server.DTO;
-using Server.Events;
+using Server.Events.ClientEvents;
 using Server.ServiceRealisation;
+using Server.Services.Network;
 using Shared;
 using Shared.NetworkEvents;
 
-namespace Server.Services;
+namespace Server.Services.DTOHandlers;
 
 [Service]
 public sealed class UserStateService : IInitializable

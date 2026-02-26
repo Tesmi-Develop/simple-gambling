@@ -1,8 +1,9 @@
 using Hypercube.Utilities.Dependencies;
 using Server.DTO;
 using Server.ServiceRealisation;
+using Server.Services.DTOHandlers;
 
-namespace Server.Services;
+namespace Server.Services.Mechanics;
 
 [Service]
 public sealed class CooldownService

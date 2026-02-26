@@ -1,12 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using Hypercube.Utilities.Dependencies;
-using Server.Events;
 using Server.Events.DataEvents;
 using Server.ServiceRealisation;
-using Server.Utility;
 using Shared;
 
-namespace Server.Services;
+namespace Server.Services.DTOHandlers;
 
 [Service]
 public class DataEditorService

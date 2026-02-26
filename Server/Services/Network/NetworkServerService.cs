@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using Server.ServiceRealisation;
 
-namespace Server.Services;
+namespace Server.Services.Network;
 
 [Service]
 public sealed class NetworkServerService : IStartable

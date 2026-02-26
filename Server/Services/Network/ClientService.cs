@@ -2,11 +2,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
 using Hypercube.Utilities.Dependencies;
 using Server.DTO;
-using Server.Events;
+using Server.Events.ClientEvents;
 using Server.ServiceRealisation;
 using Shared;
 
-namespace Server.Services;
+namespace Server.Services.Network;
 
 [Service]
 public sealed class ClientService : IInitializable

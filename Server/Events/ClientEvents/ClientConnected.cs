@@ -1,6 +1,6 @@
 using Server.DTO;
 
-namespace Server.Events;
+namespace Server.Events.ClientEvents;
 
 public class ClientConnected
 {

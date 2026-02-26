@@ -1,8 +1,9 @@
 using Hypercube.Utilities.Dependencies;
 using Server.ServiceRealisation;
+using Server.Services.DTOHandlers;
 using Shared;
 
-namespace Server.Services;
+namespace Server.Services.Mechanics;
 
 [Service]
 public sealed class GamblingService

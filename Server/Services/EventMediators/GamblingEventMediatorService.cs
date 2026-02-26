@@ -1,10 +1,12 @@
 using Hypercube.Utilities.Dependencies;
 using Server.ServiceRealisation;
+using Server.Services.Mechanics;
+using Server.Services.Network;
 using Server.Utility;
 using Shared;
 using Shared.NetworkEvents.Gambling;
 
-namespace Server.Services;
+namespace Server.Services.EventMediators;
 
 [Service]
 public sealed class GamblingEventMediatorService : IInitializable
