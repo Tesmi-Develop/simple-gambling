@@ -8,7 +8,7 @@ public enum BroadcastType
     Targeted,
 }
 
-public class OnSendNetworkEvent
+public class SendedNetworkEvent
 {
     public BroadcastType BroadcastType = BroadcastType.All;
     public List<Client> Clients = [];

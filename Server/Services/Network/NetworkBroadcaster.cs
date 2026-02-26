@@ -21,7 +21,7 @@ public sealed class NetworkBroadcaster : IInitializable
         return type.IsDefined(typeof(NetworkEventAttribute), false);
     }
 
-    private void SendNetworkEvent(OnSendNetworkEvent networkEvent)
+    private void SendNetworkEvent(SendedNetworkEvent networkEvent)
     {
         var packet = new Packet
         {
@@ -58,7 +58,7 @@ public sealed class NetworkBroadcaster : IInitializable
         if (attribute.Direction != NetworkDirection.ServerToClient)
             throw new Exception($"Cannot send {type.Name}: direction is not ServerToClient");
         
-        SendNetworkEvent(new OnSendNetworkEvent
+        SendNetworkEvent(new SendedNetworkEvent
         {
             BroadcastType = broadcastType,
             Clients = clients,
