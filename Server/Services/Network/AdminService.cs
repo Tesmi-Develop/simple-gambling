@@ -7,6 +7,7 @@ using Shared.NetworkEvents;
 
 namespace Server.Services.Network;
 
+[Service]
 public class AdminService : IInitializable
 {
     [Dependency] private readonly EventBus _eventBus = null!;
