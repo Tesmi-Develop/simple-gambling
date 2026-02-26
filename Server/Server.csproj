@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Server</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="Data.json">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Sprites\**">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <Target Name="CreateLinks" AfterTargets="Build">
+        <PropertyGroup>
+            <DataSrc>$(ProjectDir)Data.json</DataSrc>
+            <DataDst>$(TargetDir)Data.json</DataDst>
+            <SpritesSrc>$(ProjectDir)Sprites</SpritesSrc>
+            <SpritesDst>$(TargetDir)Sprites</SpritesDst>
+        </PropertyGroup>
+
+        <Message Importance="high" Text="--- Creating Cross-Platform Links (Windows/Linux) ---" />
+
+        <Copy
+                SourceFiles="$(DataSrc)"
+                DestinationFiles="$(DataDst)"
+                UseHardlinksIfPossible="true"
+                OverwriteReadOnlyFiles="true" />
+
+        <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+            <RemoveDirCmd>if exist "$(SpritesDst)" (if not exist "$(SpritesDst)\*" (rmdir /s /q "$(SpritesDst)") else (rmdir "$(SpritesDst)"))</RemoveDirCmd>
+            <LinkCmd>mklink /J "$(SpritesDst)" "$(SpritesSrc)"</LinkCmd>
+        </PropertyGroup>
+
+        <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+            <RemoveDirCmd>rm -rf "$(SpritesDst)"</RemoveDirCmd>
+            <LinkCmd>ln -s "$(SpritesSrc)" "$(SpritesDst)"</LinkCmd>
+        </PropertyGroup>
+
+        <Exec Command="$(RemoveDirCmd)" IgnoreExitCode="true" />
+        <Exec Command="$(LinkCmd)" Condition="!Exists('$(SpritesDst)')" />
+    </Target>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Shared\Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Hypercube.Utilities" Version="1.1.2" />
+    </ItemGroup>
+
+</Project>

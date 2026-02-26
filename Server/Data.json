@@ -1,0 +1,29 @@
+{
+  "SpinCooldown": 10,
+  "SpinItems": [
+    {
+      "Name": "Item1",
+      "DisplayName": "Item1",
+      "Sprite": "Sprites/item1.png",
+      "Weight": 1
+    },
+    {
+      "Name": "Item2",
+      "DisplayName": "Item2",
+      "Sprite": "Sprites/item2.png",
+      "Weight": 2
+    },
+    {
+      "Name": "Item3",
+      "DisplayName": "Item3",
+      "Sprite": "Sprites/item3.png",
+      "Weight": 3
+    },
+    {
+      "Name": "TestSpinItem11",
+      "DisplayName": "Test SpinItem",
+      "Sprite": "Sprites/TestSpinItem11.png",
+      "Weight": 0
+    }
+  ]
+}
