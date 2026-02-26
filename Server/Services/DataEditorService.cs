@@ -25,7 +25,7 @@ public class DataEditorService
         File.WriteAllBytes(fileName, imageBytes);
         spinItem.Sprite = fileName;
         
-        _dataTrackerService.Mutate((data) =>
+        _dataTrackerService.Mutate(data =>
         {
             data.SpinItems.Add(spinItem);
         });
@@ -55,11 +55,49 @@ public class DataEditorService
         if (!TryFindSpinItem(itemName, out var spinItem))
             throw new Exception("SpinItem not found");
         
-        _dataTrackerService.Mutate((data) =>
+        _dataTrackerService.Mutate(data =>
         {
             data.SpinItems.Remove(spinItem);
         });
         
         _eventBus.Publish(new RemovedSpinItem { ItemName = itemName });
+    }
+
+    public void UpdateSpinItem(PatchSpinItem patchSpinItem)
+    {
+        if (!TryFindSpinItem(patchSpinItem.OriginalName, out var originalSpinItem))
+            throw new Exception("SpinItem not found");
+        
+        _dataTrackerService.Mutate(_ =>
+        {
+            var patchType = typeof(PatchSpinItem);
+            var targetType = typeof(SpinItem);
+    
+            foreach (var patchProp in patchType.GetProperties())
+            {
+                var originalProp = targetType.GetProperty(patchProp.Name);
+                if (originalProp is null)
+                    continue;
+                
+                var patchValue = patchProp.GetValue(patchSpinItem);
+                var originalValue = originalProp.GetValue(originalSpinItem);
+                if (patchValue is null) 
+                    continue;
+            
+                var attr = (PathCustomHandler?)Attribute.GetCustomAttribute(patchProp, typeof(PathCustomHandler));
+                if (attr is not null)
+                {
+                    var method = patchType.GetMethod(attr.MethodName);
+                    var newValue = method?.Invoke(patchSpinItem, [patchValue, originalValue]);
+            
+                    originalProp.SetValue(originalSpinItem, newValue);
+                    return;
+                }
+
+                originalProp.SetValue(originalSpinItem, patchValue);
+            } 
+        });
+        
+        _eventBus.Publish(new UpdatedSpinItem { Item = originalSpinItem });
     }
 }

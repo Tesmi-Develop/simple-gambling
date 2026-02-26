@@ -4,8 +4,8 @@ using Server.Events.DataEvents;
 using Server.ServiceRealisation;
 using Server.Utility;
 using Shared;
-using Shared.Events;
-using Shared.Events.DataEvents;
+using Shared.NetworkEvents;
+using Shared.NetworkEvents.DataEvents;
 
 namespace Server.Services;
 
@@ -49,7 +49,7 @@ public sealed class DataSynchronizerService : IInitializable
     
     public void Init()
     {
-        _eventBus.Subscribe<ClientConnected>((args) =>
+        _eventBus.Subscribe<ClientConnected>(args =>
         {
             _networkBroadcaster.SendEvent(args.Client, new InitialDataSync
             {
@@ -57,19 +57,27 @@ public sealed class DataSynchronizerService : IInitializable
             });
         });
         
-        _eventBus.Subscribe<AddedSpinItem>((args) =>
+        _eventBus.Subscribe<AddedSpinItem>(args =>
         {
-            _networkBroadcaster.SendEvent(new AddedSpinItemNetwork()
+            _networkBroadcaster.SendEvent(new AddedSpinItemNetwork
             {
                 SpinItem = PrepareForClientSpinItem(args.Item)
             });
         });
         
-        _eventBus.Subscribe<RemovedSpinItem>((args) =>
+        _eventBus.Subscribe<RemovedSpinItem>(args =>
         {
-            _networkBroadcaster.SendEvent(new RemovedSpinItemNetwork()
+            _networkBroadcaster.SendEvent(new RemovedSpinItemNetwork
             {
                 ItemName = args.ItemName
+            });
+        });
+        
+        _eventBus.Subscribe<UpdatedSpinItem>(args =>
+        {
+            _networkBroadcaster.SendEvent(new UpdatedSpinItemNetwork
+            {
+                SpinItem = args.Item
             });
         });
     }

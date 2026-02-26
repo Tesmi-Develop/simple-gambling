@@ -2,8 +2,7 @@
 using System.Text;
 using System.Text.Json;
 using Shared;
-using Shared.Events;
-using Shared.Events.Gambling;
+using Shared.NetworkEvents.Gambling;
 
 // 1. Подключение
 using TcpClient client = new TcpClient("127.0.0.1", 8000);

@@ -1,4 +1,4 @@
-namespace Shared.Events.Gambling
+namespace Shared.NetworkEvents.Gambling
 {
     [NetworkEvent(NetworkDirection.ClientToServer)]
     public class SpinRequested

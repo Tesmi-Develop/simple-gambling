@@ -19,7 +19,7 @@ public sealed class CooldownService
 
     public void GiveCooldown(Client client)
     {
-        _userStateService.MutateUserState(client, (state) =>
+        _userStateService.MutateUserState(client, state =>
         {
             state.SpinCooldownEnd = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _dataTrackerService.Read().SpinCooldown;
         });

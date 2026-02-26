@@ -18,7 +18,7 @@ public sealed class DataTrackerService
         if (_attachedFileName == string.Empty)
             return;
 
-        var source = JsonSerializer.Serialize(_data!, new JsonSerializerOptions() { WriteIndented = true });
+        var source = JsonSerializer.Serialize(_data!, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(_attachedFileName, source);
     }
 

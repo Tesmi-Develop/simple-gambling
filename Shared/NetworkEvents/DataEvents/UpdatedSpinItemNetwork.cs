@@ -1,7 +1,7 @@
-namespace Shared.Events.DataEvents
+namespace Shared.NetworkEvents.DataEvents
 {
     [NetworkEvent(NetworkDirection.ServerToClient)]
-    public class AddedSpinItemNetwork
+    public class UpdatedSpinItemNetwork
     {
         public SpinItem SpinItem { get; set; }
     }

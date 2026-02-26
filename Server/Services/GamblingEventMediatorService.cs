@@ -2,8 +2,7 @@ using Hypercube.Utilities.Dependencies;
 using Server.ServiceRealisation;
 using Server.Utility;
 using Shared;
-using Shared.Events;
-using Shared.Events.Gambling;
+using Shared.NetworkEvents.Gambling;
 
 namespace Server.Services;
 

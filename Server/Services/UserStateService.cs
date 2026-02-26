@@ -3,8 +3,7 @@ using Server.DTO;
 using Server.Events;
 using Server.ServiceRealisation;
 using Shared;
-using Shared.Events;
-using Shared.Events.Gambling;
+using Shared.NetworkEvents;
 
 namespace Server.Services;
 

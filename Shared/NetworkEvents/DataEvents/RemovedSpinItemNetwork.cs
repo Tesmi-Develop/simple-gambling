@@ -1,4 +1,4 @@
-namespace Shared.Events.DataEvents
+namespace Shared.NetworkEvents.DataEvents
 {
     [NetworkEvent(NetworkDirection.ServerToClient)]
     public class RemovedSpinItemNetwork

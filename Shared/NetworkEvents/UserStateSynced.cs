@@ -1,4 +1,4 @@
-namespace Shared.Events
+namespace Shared.NetworkEvents
 {
     [NetworkEvent(NetworkDirection.ServerToClient)]
     public class UserStateSynced
