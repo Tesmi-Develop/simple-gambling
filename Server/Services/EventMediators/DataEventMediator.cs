@@ -21,7 +21,7 @@ public class DataEventMediator : IInitializable
     
     public void Init()
     {
-        _eventBus.Subscribe<AddSpinItem>(args =>
+        _eventBus.Subscribe<RequestAddSpinItem>(args =>
         {
             if (!IsAdmin(args.GetSender()))
                 return;
@@ -36,7 +36,7 @@ public class DataEventMediator : IInitializable
             }
         });
         
-        _eventBus.Subscribe<UpdateSpinItem>(args =>
+        _eventBus.Subscribe<RequestUpdateSpinItem>(args =>
         {
             if (!IsAdmin(args.GetSender()))
                 return;
@@ -51,7 +51,7 @@ public class DataEventMediator : IInitializable
             }
         });
         
-        _eventBus.Subscribe<RemoveSpinItem>(args =>
+        _eventBus.Subscribe<RequestRemoveSpinItem>(args =>
         {
             if (!IsAdmin(args.GetSender()))
                 return;

@@ -14,6 +14,9 @@ public class DataEditorService
     
     public void AddSpinItem(SpinItem spinItem)
     {
+        if (TryFindSpinItem(spinItem.Name))
+            throw new Exception($"SpinItem {spinItem.Name} already exists");
+        
         var imageBytes = Convert.FromBase64String(spinItem.Sprite);
         var format = SpriteValidator.GetValidSpriteExtension(imageBytes);
         if (format is null)
@@ -29,6 +32,11 @@ public class DataEditorService
         });
         
         _eventBus.Publish(new AddedSpinItem { Item = spinItem });
+    }
+
+    private bool TryFindSpinItem(string spinItemName)
+    {
+        return TryFindSpinItem(spinItemName, out _);
     }
 
     private bool TryFindSpinItem(string itemName, [MaybeNullWhen(false)] out SpinItem spinItem)
