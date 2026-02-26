@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Shared;
 
 namespace Server.Utility;
 
@@ -48,33 +47,5 @@ public static class ReflectionHelper
             }
         }
         return target!;
-    }
-    
-    public static void ApplyPatch(object original, object patch)
-    {
-        var type = patch.GetType();
-        var properties = type.GetProperties();
-
-        foreach (var prop in properties)
-        {
-            var patchValue = prop.GetValue(patch);
-            var originalValue = prop.GetValue(original);
-            if (patchValue == null) continue;
-            
-            var attr = (PathCustomHandler?)Attribute.GetCustomAttribute(prop, typeof(PathCustomHandler));
-
-            if (attr is not null)
-            {
-                var method = type.GetMethod(attr.MethodName);
-                if (method is not null)
-                {
-                    var newValue = method.Invoke(patch, [patchValue, originalValue]);
-                    prop.SetValue(original, newValue);
-                    return;
-                }
-            }
-
-            prop.SetValue(original, patchValue);
-        }
     }
 }

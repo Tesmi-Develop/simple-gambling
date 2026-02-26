@@ -17,7 +17,7 @@ public static class Program
     
     public static void Main()
     {
-        InitEventBus();
+        PrepareEventBus();
         ServiceManager.CreateAll();
         PrepareDataTracker();
         PrepareNetworkServer();
@@ -29,7 +29,7 @@ public static class Program
         FreezeThread();
     }
 
-    private static void InitEventBus()
+    private static void PrepareEventBus()
     {
         Container.Register<EventBus>();
     }
