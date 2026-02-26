@@ -9,8 +9,8 @@ namespace Server.Services.DTOHandlers;
 [Service]
 public class DataEditorService
 {
-    [Dependency] private readonly EventBus _eventBus;
-    [Dependency] private readonly DataTrackerService _dataTrackerService;
+    [Dependency] private readonly EventBus _eventBus = null!;
+    [Dependency] private readonly DataTrackerService _dataTrackerService = null!;
     
     public void AddSpinItem(SpinItem spinItem)
     {
