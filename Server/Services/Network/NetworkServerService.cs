@@ -1,5 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
+using Hypercube.Utilities.Debugging.Logger;
+using Hypercube.Utilities.Dependencies;
 using Server.ServiceRealisation;
 
 namespace Server.Services.Network;
@@ -7,6 +9,8 @@ namespace Server.Services.Network;
 [Service]
 public sealed class NetworkServerService : IStartable
 {
+    [Dependency] private readonly ILogger _logger = null!;
+    
     public event Action<TcpClient, byte[]>? OnReceive;
     public event Action<TcpClient>? OnConnect;
     public event Action<TcpClient>? OnDisconnect;
@@ -31,11 +35,11 @@ public sealed class NetworkServerService : IStartable
         return true;
     }
     
-    private async Task ListenClient(TcpClient client)
+    private async Task ListenClient(TcpClient socket)
     {
-        using (client)
+        using (socket)
         {
-            await using var stream = client.GetStream();
+            await using var stream = socket.GetStream();
 
             while (true)
             {
@@ -52,11 +56,11 @@ public sealed class NetworkServerService : IStartable
                     
                     try
                     {
-                        OnReceive?.Invoke(client, messageBuffer);
+                        OnReceive?.Invoke(socket, messageBuffer);
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine($"Got exception while handling message client: {e.Message}");
+                        _logger.Warning($"Got exception while handling message client: {e.Message}");
                     }
                 }
                 catch (IOException e)
@@ -64,7 +68,8 @@ public sealed class NetworkServerService : IStartable
                     break;
                 }    
             }
-            OnDisconnect?.Invoke(client);
+            OnDisconnect?.Invoke(socket);
+            _logger.Debug($"Socket disconnected {socket.Client.RemoteEndPoint}");
         }
     }
 
@@ -72,9 +77,10 @@ public sealed class NetworkServerService : IStartable
     {
         while (true)
         {
-            var client = await _listener.AcceptTcpClientAsync();
-            OnConnect?.Invoke(client);
-            _ = ListenClient(client);
+            var socket = await _listener.AcceptTcpClientAsync();
+            _logger.Debug($"Socket connected {socket.Client.RemoteEndPoint}");
+            OnConnect?.Invoke(socket);
+            _ = ListenClient(socket);
         }
     }
     
@@ -86,6 +92,7 @@ public sealed class NetworkServerService : IStartable
         _listener.Start();
         _ = ListenClients();
         
+        _logger.Debug("listener started");
         return Task.CompletedTask;
     }
 }

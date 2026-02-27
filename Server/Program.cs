@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Hypercube.Utilities.Debugging.Logger;
 using Hypercube.Utilities.Dependencies;
 using Server.ServiceRealisation;
 using Server.Services.DTOHandlers;
@@ -18,6 +19,7 @@ public static class Program
     
     public static void Main()
     {
+        PrepareLogger();
         PrepareEventBus();
         ServiceManager.CreateAll();
         PrepareDataTracker();
@@ -26,8 +28,19 @@ public static class Program
         ServiceManager.InitAll();
         ServiceManager.StartAll();
         
-        Console.WriteLine("Server started");
+        Container.Resolve<ILogger>().Info("LET'S GO GAMBLING!!! (Server started)");
         FreezeThread();
+    }
+
+    private static void PrepareLogger()
+    {
+        Container.Register<ILogger>((_, target) =>
+        {
+            if (target is null)
+                return new ConsoleLogger();
+            
+            return new MyLogger(target);
+        }, DependencyLifetime.Transient);
     }
 
     private static void PrepareEventBus()

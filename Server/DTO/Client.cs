@@ -8,21 +8,11 @@ namespace Server.DTO;
 
 public sealed class Client
 {
-    private static Dictionary<string, Type>  _types = [];
-    
     public event Action<Packet> OnDataReceived;
     
     private readonly NetworkStream _stream;
     private readonly TcpClient _socket;
     public IUserState UserState { get; }
-
-    static Client()
-    {
-        foreach (var (type, data) in ReflectionHelper.GetAllTypes<NetworkEventAttribute>())
-        {
-            _types[type.Name] = type;
-        }
-    }
 
     public Client(TcpClient socket)
     {
@@ -43,27 +33,5 @@ public sealed class Client
         await _stream.WriteAsync(length);
         await _stream.WriteAsync(packet);
         await _stream.FlushAsync();
-    }
-    
-    public (Packet, Type) Receive(byte[] message)
-    {
-        var json = Encoding.UTF8.GetString(message);
-        var packetObject = JsonSerializer.Deserialize<Packet>(json);
-        if (packetObject == null)
-            throw new Exception("Packet object is null");
-
-        var jsonData = (JsonElement)packetObject.Data;
-        
-        if (!_types.TryGetValue(packetObject.EventName, out var eventType))
-            throw new Exception("Unknown packet type");
-        
-        var arg = jsonData.Deserialize(eventType);
-        if (arg is null)
-            throw new Exception("Unknown packet type");
-        
-        packetObject.Data = arg;
-        OnDataReceived?.Invoke(packetObject);
-        
-        return (packetObject, eventType);
     }
 }

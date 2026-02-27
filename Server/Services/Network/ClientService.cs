@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
+using Hypercube.Utilities.Debugging.Logger;
 using Hypercube.Utilities.Dependencies;
 using Server.DTO;
 using Server.Events.ClientEvents;
@@ -14,6 +15,7 @@ public sealed class ClientService : IInitializable
     [Dependency] private readonly NetworkServerService _networkServerService = null!;
     [Dependency] private readonly EventBus _eventBus = null!;
     [Dependency] private readonly DependenciesContainer _dependencies = null!;
+    [Dependency] private readonly ILogger _logger = null!;
     
     public IReadOnlyDictionary<TcpClient, Client> Clients => _clients;
     private readonly Dictionary<TcpClient, Client> _clients = [];
@@ -33,6 +35,7 @@ public sealed class ClientService : IInitializable
         {
             Client = client,
         });
+        _logger.Debug($"Created new client with id {client.UserState.Id}");
     }
 
     private void UnregisterClient(TcpClient socket)
@@ -45,6 +48,7 @@ public sealed class ClientService : IInitializable
         {
             Client = client,
         });
+        _logger.Debug($"Removed client with id {client.UserState.Id}");
     }
 
     public Client GetClient(TcpClient client)

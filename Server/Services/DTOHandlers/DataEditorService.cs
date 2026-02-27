@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using Hypercube.Utilities.Debugging.Logger;
 using Hypercube.Utilities.Dependencies;
+using Hypercube.Utilities.Helpers;
 using Server.Events.DataEvents;
 using Server.ServiceRealisation;
 using Shared;
@@ -11,6 +13,7 @@ public class DataEditorService
 {
     [Dependency] private readonly EventBus _eventBus = null!;
     [Dependency] private readonly DataTrackerService _dataTrackerService = null!;
+    [Dependency] private readonly ILogger _logger = null!;
     
     public void AddSpinItem(SpinItem spinItem)
     {
@@ -32,6 +35,7 @@ public class DataEditorService
         });
         
         _eventBus.Publish(new AddedSpinItem { Item = spinItem });
+        _logger.Debug($"SpinItem {spinItem.Name} added.");
     }
 
     private bool TryFindSpinItem(string spinItemName)
@@ -67,6 +71,7 @@ public class DataEditorService
         });
         
         _eventBus.Publish(new RemovedSpinItem { ItemName = itemName });
+        _logger.Debug($"SpinItem {spinItem.Name} removed.");
     }
 
     public void UpdateSpinItem(PatchSpinItem patchSpinItem)
@@ -105,5 +110,6 @@ public class DataEditorService
         });
         
         _eventBus.Publish(new UpdatedSpinItem { Item = originalSpinItem });
+        _logger.Debug($"SpinItem {originalSpinItem.Name} updated.");
     }
 }

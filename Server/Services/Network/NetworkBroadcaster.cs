@@ -1,5 +1,8 @@
+using System.Collections.Frozen;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
+using System.Text.Json;
 using Hypercube.Utilities.Dependencies;
 using Server.DTO;
 using Server.Events;
@@ -15,6 +18,7 @@ public sealed class NetworkBroadcaster : IInitializable
     [Dependency] private readonly NetworkServerService _networkServerService = null!;
     [Dependency] private readonly ClientService _clientService = null!;
     [Dependency] private readonly EventBus _eventBus = null!;
+    private static FrozenDictionary<string, Type>  _types = null!;
 
     private bool IsNetworkEvent(Type type)
     {
@@ -72,14 +76,28 @@ public sealed class NetworkBroadcaster : IInitializable
         if (!_clientService.TryGetClient(socket, out var client))
             return;
         
-        var (packet, eventType) = client!.Receive(message);
+        var json = Encoding.UTF8.GetString(message);
+        var packetObject = JsonSerializer.Deserialize<Packet>(json);
+        if (packetObject == null)
+            throw new Exception("Packet object is null");
+
+        var jsonData = (JsonElement)packetObject.Data;
+        
+        if (!_types.TryGetValue(packetObject.EventName, out var eventType))
+            throw new Exception($"Unknown packet type, Got event name: {packetObject.EventName}, JSON: {json}");
+        
+        var arg = jsonData.Deserialize(eventType);
+        if (arg is null)
+            throw new Exception($"Unknown packet type, Got null when deserialize event data. Event name: {packetObject.EventName}, JSON: {json}");
+        
+        packetObject.Data = arg;
 
         var networkEventAttribute = eventType.GetCustomAttribute<NetworkEventAttribute>(false);
         if (networkEventAttribute is null || networkEventAttribute.Direction != NetworkDirection.ClientToServer)
             return;
         
-        NetworkEventMetadata.SetSender(packet.Data, client);
-        _eventBus.Publish(packet.Data, eventType);
+        NetworkEventMetadata.SetSender(packetObject.Data, client);
+        _eventBus.Publish(packetObject.Data, eventType);
     }
     
     public void SendEvent<T>(List<Client> clients, T eventData) where T : class
@@ -99,6 +117,14 @@ public sealed class NetworkBroadcaster : IInitializable
 
     public void Init()
     {
+        var types = new Dictionary<string, Type>();
+        foreach (var (type, data) in ReflectionHelper.GetAllTypes<NetworkEventAttribute>())
+        {
+            types[type.Name] = type;
+        }
+
+        _types = types.ToFrozenDictionary();
+        
         _networkServerService.OnReceive += HandleClientPackage;
     }
 }
