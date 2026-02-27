@@ -50,11 +50,18 @@ public sealed class NetworkServerService : IStartable
                     if (!await ReadExactlyAsync(stream, messageBuffer)) 
                         break;
                     
-                    OnReceive?.Invoke(client, messageBuffer);
+                    try
+                    {
+                        OnReceive?.Invoke(client, messageBuffer);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Got exception while handling message client: {e.Message}");
+                    }
                 }
-                catch (Exception e)
+                catch (IOException e)
                 {
-                    Console.WriteLine($"Got exception while handling message client: {e.Message}");
+                    break;
                 }    
             }
             OnDisconnect?.Invoke(client);
